@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.document.spec._
 import com.amazonaws.services.dynamodbv2.model.{DeleteTableResult, TableDescription}
 
 package object dynamocontract {
-  trait DynamoDBContract{
+  trait DynamoDBTableContract{
     def delete:()=>DeleteTableResult
     def deleteItem:DeleteItemSpec=>DeleteItemOutcome
     def describe:()=>TableDescription
@@ -28,8 +28,8 @@ package object dynamocontract {
     def waitForDelete:()=>Unit
   }
 
-  def dynamoTable(table:Table):DynamoDBContract = {
-    new  DynamoDBContract(){
+  def dynamoTable(table:Table):DynamoDBTableContract = {
+    new  DynamoDBTableContract(){
       override def delete                   = table.delete
       override def deleteItem               = table.deleteItem
       override def describe                 = table.describe
@@ -51,6 +51,6 @@ package object dynamocontract {
     }
   }
 
-  def getDynamoTable(tableName: String): DynamoDBContract = dynamoTable(new DynamoDB(Regions.US_WEST_1).getTable(tableName))
+  def getDynamoTable(tableName: String): DynamoDBTableContract = dynamoTable(new DynamoDB(Regions.US_WEST_1).getTable(tableName))
 
 }

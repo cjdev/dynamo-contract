@@ -3,9 +3,9 @@ package com.cj.dynamocontract.test
 import com.amazonaws.services.dynamodbv2.document._
 import com.amazonaws.services.dynamodbv2.document.spec._
 import com.amazonaws.services.dynamodbv2.model.{DeleteTableResult, TableDescription}
-import com.cj.dynamocontract.DynamoDBContract
+import com.cj.dynamocontract.DynamoDBTableContract
 
-object DynamoDBInterfaceStub extends DynamoDBContract {
+object DynamoDBTableStub extends DynamoDBTableContract {
   override def delete: () => DeleteTableResult = ???
   override def deleteItem: DeleteItemSpec => DeleteItemOutcome = ???
   override def describe: () => TableDescription = ???
