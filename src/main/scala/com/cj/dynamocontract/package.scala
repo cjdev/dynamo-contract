@@ -8,46 +8,46 @@ import com.amazonaws.services.dynamodbv2.model.{DeleteTableResult, TableDescript
 
 package object dynamocontract {
   trait DynamoDBTableContract{
-    def delete:()=>DeleteTableResult
-    def deleteItem:DeleteItemSpec=>DeleteItemOutcome
-    def describe:()=>TableDescription
-    def getDescription:()=>TableDescription
-    def getIndex:String=>Index
-    def getItem:GetItemSpec=>Item
-    def getItemOutcome:GetItemSpec=>GetItemOutcome
-    def getTableName:()=>String
-    def putItem:Item=>PutItemOutcome
-    def query:QuerySpec=> ItemCollection[QueryOutcome]
-    def scan:ScanSpec=> ItemCollection[ScanOutcome]
+    def delete():DeleteTableResult
+    def deleteItem(spec: DeleteItemSpec):DeleteItemOutcome
+    def describe(): TableDescription
+    def getDescription: TableDescription
+    def getIndex(indexName: String): Index
+    def getItem(spec: GetItemSpec): Item
+    def getItemOutcome(spec: GetItemSpec): GetItemOutcome
+    def getTableName: String
+    def putItem(item: Item): PutItemOutcome
+    def query(spec: QuerySpec):  ItemCollection[QueryOutcome]
+    def scan(spec: ScanSpec):  ItemCollection[ScanOutcome]
     def toString:String
-    def updateItem:UpdateItemSpec=>UpdateItemOutcome
-    def updateTable:UpdateTableSpec=>TableDescription
-    def waitForActive:()=>TableDescription
-    def waitForActiveOrDelete:()=>TableDescription
-    def waitForAllActiveOrDelete:()=>TableDescription
-    def waitForDelete:()=>Unit
+    def updateItem(spec: UpdateItemSpec): UpdateItemOutcome
+    def updateTable(spec: UpdateTableSpec): TableDescription
+    def waitForActive(): TableDescription
+    def waitForActiveOrDelete(): TableDescription
+    def waitForAllActiveOrDelete(): TableDescription
+    def waitForDelete(): Unit
   }
 
   def dynamoTable(table:Table):DynamoDBTableContract = {
     new  DynamoDBTableContract(){
-      override def delete                   = table.delete
-      override def deleteItem               = table.deleteItem
-      override def describe                 = table.describe
-      override def getDescription           = table.getDescription
-      override def getIndex                 = table.getIndex
-      override def getItem                  = table.getItem
-      override def getItemOutcome           = table.getItemOutcome
-      override def getTableName             = table.getTableName
-      override def putItem                  = table.putItem
-      override def query                    = table.query
-      override def scan                     = table.scan
-      override def toString                 = table.toString
-      override def updateItem               = table.updateItem
-      override def updateTable              = table.updateTable
-      override def waitForActive            = table.waitForActive
-      override def waitForActiveOrDelete    = table.waitForActiveOrDelete
-      override def waitForAllActiveOrDelete = table.waitForAllActiveOrDelete
-      override def waitForDelete            = table.waitForDelete
+      override def delete(): DeleteTableResult                          = table.delete
+      override def deleteItem(spec: DeleteItemSpec): DeleteItemOutcome  = table.deleteItem(spec)
+      override def describe(): TableDescription                         = table.describe
+      override def getDescription: TableDescription                     = table.getDescription
+      override def getIndex(indexName: String): Index                   = table.getIndex(indexName)
+      override def getItem(spec: GetItemSpec): Item                     = table.getItem(spec)
+      override def getItemOutcome(spec: GetItemSpec): GetItemOutcome    = table.getItemOutcome()
+      override def getTableName: String                                 = table.getTableName
+      override def putItem(item: Item): PutItemOutcome                  = table.putItem(item)
+      override def query(spec: QuerySpec): ItemCollection[QueryOutcome] = table.query(spec)
+      override def scan(spec: ScanSpec): ItemCollection[ScanOutcome]    = table.scan(spec)
+      override def toString: String                                     = table.toString
+      override def updateItem(spec: UpdateItemSpec): UpdateItemOutcome  = table.updateItem(spec)
+      override def updateTable(spec: UpdateTableSpec): TableDescription = table.updateTable(spec)
+      override def waitForActive(): TableDescription                    = table.waitForActive
+      override def waitForActiveOrDelete(): TableDescription            = table.waitForActiveOrDelete
+      override def waitForAllActiveOrDelete(): TableDescription         = table.waitForAllActiveOrDelete
+      override def waitForDelete(): Unit                                = table.waitForDelete()
     }
   }
 
