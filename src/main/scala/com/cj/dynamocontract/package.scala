@@ -1,7 +1,9 @@
 package com.cj
 
 
+import com.amazonaws.auth.{AWSStaticCredentialsProvider, BasicAWSCredentials}
 import com.amazonaws.regions.Regions
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.dynamodbv2.document._
 import com.amazonaws.services.dynamodbv2.document.spec._
 import com.amazonaws.services.dynamodbv2.model.{DeleteTableResult, TableDescription}
@@ -53,4 +55,17 @@ package object dynamocontract {
 
   def getDynamoTable(tableName: String): DynamoDBTableContract = dynamoTable(new DynamoDB(Regions.US_WEST_1).getTable(tableName))
 
+  def getDynamoTable(
+                      accessKeyId: String,
+                      secretKey: String,
+                      tableName: String
+                    ): DynamoDBTableContract = {
+    val credentials = new BasicAWSCredentials(accessKeyId, secretKey)
+    val provider = new AWSStaticCredentialsProvider(credentials)
+    val client = AmazonDynamoDBClientBuilder.standard()
+      .withCredentials(provider)
+      .withRegion(Regions.US_WEST_1)
+      .build()
+    dynamoTable(new DynamoDB(client).getTable(tableName))
+  }
 }
