@@ -4,6 +4,7 @@ import com.amazonaws.{AmazonClientException, AmazonWebServiceRequest}
 import com.amazonaws.services.dynamodbv2.document._
 import com.amazonaws.services.dynamodbv2.document.spec._
 import com.amazonaws.services.dynamodbv2.model._
+import scala.util.Try
 
 package object dynamocontract {
 
@@ -11,17 +12,17 @@ package object dynamocontract {
   def dynamoTable(table: Table): DynamoDBTableContract =
     DynamoDBTableContract.fromSDKTable(table)
 
-  @deprecated("Replace with TableConfig.toTable")
+  @deprecated("Replace with TableConfig.getTable")
   def getDynamoTable(tableName: String): DynamoDBTableContract =
-    TableConfig(tableName).toTable
+    TableConfig(tableName).getTable.get
 
-  @deprecated("Replace with TableConfig.toTable")
+  @deprecated("Replace with TableConfig.getTable")
   def getDynamoTable(
                       accessKeyId: String,
                       secretKey: String,
                       tableName: String
                     ): DynamoDBTableContract =
-    TableConfig(tableName).withCredentials(accessKeyId, secretKey).toTable
+    TableConfig(tableName).withCredentials(accessKeyId, secretKey).getTable.get
 
   trait DynamoDBTableContract {
     def delete(): DeleteTableResult
@@ -68,8 +69,8 @@ package object dynamocontract {
         override def toString: String                            = table.toString
       }
 
-    def fromTableConfig(tableConfig: TableConfig): DynamoDBTableContract =
-      tableConfig.toTable
+    def fromTableConfig(tableConfig: TableConfig): Try[DynamoDBTableContract] =
+      tableConfig.getTable
   }
 
   trait ClientConfig {
@@ -137,7 +138,7 @@ package object dynamocontract {
     def withClientConfig(cfg: ClientConfig): TableConfig =
       this.copy(clientConfig = Some(cfg))
 
-    def toTable: DynamoDBTableContract = {
+    def getTable: Try[DynamoDBTableContract] = Try {
 
       import com.amazonaws.ClientConfiguration
       import com.amazonaws.auth.{AWSCredentials, AWSCredentialsProvider}
