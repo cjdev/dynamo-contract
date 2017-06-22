@@ -6,13 +6,18 @@
 
     <groupId>com.cj</groupId>
     <artifactId>dynamo-contract</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
 
     <dependencies>
         <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.11.11</version>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-dynamodb</artifactId>
-            <version>1.11.78</version>
+            <version>1.11.152</version>
         </dependency>
     </dependencies>
 
@@ -22,7 +27,7 @@
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -33,7 +38,7 @@
                 </executions>
                 <configuration>
                     <scalaCompatVersion>2.11</scalaCompatVersion>
-                    <scalaVersion>2.11.7</scalaVersion>
+                    <scalaVersion>2.11.11</scalaVersion>
                 </configuration>
             </plugin>
             <plugin>
@@ -87,7 +92,6 @@
         </repository>
     </repositories>
 
-
     <distributionManagement>
         <repository>
             <id>dynamo-contract</id>
@@ -104,6 +108,5 @@
             </url>
         </snapshotRepository>
     </distributionManagement>
-
 
 </project>

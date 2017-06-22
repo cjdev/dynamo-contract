@@ -93,8 +93,8 @@ package object dynamocontract {
                             maxRetry: Int = 10
                           ): ClientConfig = {
 
-      def expt(base: Long, max: Long): Int => Long =
-        n => math.min((1 to n).map(_ => base).product, max)
+      def expMax(b: Long, n: Int, m: Long): Long =
+        math.min((1 to n).map(_ => b).product, m)
 
       new ClientConfig {
 
@@ -104,14 +104,14 @@ package object dynamocontract {
                         retriesAttempted: Int
                       ): Option[Long] = exception match {
 
-          case e: ItemCollectionSizeLimitExceededException =>
-            Some(expt(baseDelay, maxDelay)(retriesAttempted))
+          case _: ItemCollectionSizeLimitExceededException =>
+            Some(expMax(baseDelay, retriesAttempted + 1, maxDelay))
 
-          case e: LimitExceededException =>
-            Some(expt(baseDelay, maxDelay)(retriesAttempted))
+          case _: LimitExceededException =>
+            Some(expMax(baseDelay, retriesAttempted + 1, maxDelay))
 
-          case e: ProvisionedThroughputExceededException =>
-            Some(expt(throttledDelay, throttledMax)(retriesAttempted))
+          case _: ProvisionedThroughputExceededException =>
+            Some(expMax(throttledDelay, retriesAttempted + 1, throttledMax))
 
           case _ => None
         }
@@ -166,9 +166,9 @@ package object dynamocontract {
 
       clientConfig.foreach { cfg =>
 
-        val (delay, maxRetries) = (cfg.retryDelay(_, _, _), cfg.maxErrorRetry)
+        val (delay, max) = (cfg.retryDelay(_, _, _), cfg.maxErrorRetry)
 
-        val retryCondition = new RetryPolicy.RetryCondition {
+        val cond = new RetryPolicy.RetryCondition {
           def shouldRetry(
                            originalRequest: AmazonWebServiceRequest,
                            exception: AmazonClientException,
@@ -177,7 +177,7 @@ package object dynamocontract {
             delay(originalRequest, exception, retriesAttempted).isDefined
         }
 
-        val backoffStrategy = new RetryPolicy.BackoffStrategy {
+        val strat = new RetryPolicy.BackoffStrategy {
           def delayBeforeNextRetry(
                                     originalRequest: AmazonWebServiceRequest,
                                     exception: AmazonClientException,
@@ -186,16 +186,17 @@ package object dynamocontract {
             delay(originalRequest, exception, retriesAttempted).getOrElse(0)
         }
 
-        val retryPolicy = new RetryPolicy(retryCondition, backoffStrategy, maxRetries, true)
+        val retryPolicy = new RetryPolicy(cond, strat, max, true)
 
         val awsConf = new ClientConfiguration()
           .withRetryPolicy(retryPolicy)
-          .withMaxErrorRetry(maxRetries)
+          .withMaxErrorRetry(max)
 
         builder.setClientConfiguration(awsConf)
       }
 
       val table = new DynamoDB(builder.build()).getTable(tableName)
+
       DynamoDBTableContract.fromSDKTable(table)
     }
   }
