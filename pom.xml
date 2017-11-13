@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.cj</groupId>
-    <artifactId>dynamo-contract</artifactId>
-    <version>1.1</version>
+    <artifactId>dynamo-contract_2.11</artifactId>
+    <version>1.1.1</version>
 
     <dependencies>
         <dependency>
