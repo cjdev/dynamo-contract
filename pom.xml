@@ -86,19 +86,6 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>central</id>
-            <url>http://maven.dev.cj.com:8081/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <distributionManagement>
         <repository>
             <id>libs-releases</id>
